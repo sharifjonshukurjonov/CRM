@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Kurslar ro'yxati - EduAI
+{% endblock %}
+
+{% block content %}
+<br>
+<style>
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .course-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+    }
+
+    .course-card:hover {
+        transform: scale(1.02);
+    }
+
+    .course-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .course-description {
+        font-size: 16px;
+        color: #666;
+    }
+</style>
+
+<div class="container">
+    {% for course in courses %}
+    <div class="course-card">
+        <div class="course-title">{{ course.title }}</div>
+        <div class="course-description">{{ course.description }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

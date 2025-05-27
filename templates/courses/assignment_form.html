@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if assignment %}
+        Topshiriqni tahrirlash - EduAI
+    {% else %}
+        Yangi topshiriq yaratish - EduAI
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-home me-2"></i>Boshqaruv paneli
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'course_list' %}">
+                            <i class="fas fa-book me-2"></i>Kurslarim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'assignment_list' %}">
+                            <i class="fas fa-tasks me-2"></i>Topshiriqlar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ai_assistant' %}">
+                            <i class="fas fa-robot me-2"></i>AI Yordamchi
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    {% if assignment %}
+                        Topshiriqni tahrirlash
+                    {% else %}
+                        Yangi topshiriq yaratish
+                    {% endif %}
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="{% url 'course_detail' course.id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Kursga qaytish
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-tasks me-2"></i>
+                                {% if assignment %}
+                                    Topshiriq ma'lumotlarini tahrirlash
+                                {% else %}
+                                    Yangi topshiriq ma'lumotlari
+                                {% endif %}
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Kurs ma'lumotlari -->
+                            <div class="mb-4 p-3 bg-light rounded">
+                                <h6 class="mb-1">
+                                    <i class="fas fa-book me-2"></i>Kurs: {{ course.title }}
+                                </h6>
+                                <small class="text-muted">
+                                    {{ course.subject_area }} • {{ course.students.count }} talaba
+                                </small>
+                            </div>
+
+                            <!-- Forma -->
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <!-- Topshiriq nomi -->
+                                <div class="mb-4">
+                                    <label for="id_title" class="form-label">
+                                        <i class="fas fa-heading me-2"></i>Topshiriq nomi *
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="id_title"
+                                           name="title"
+                                           value="{% if form.title.value %}{{ form.title.value }}{% endif %}"
+                                           placeholder="Masalan: 1-laboratoriya ishi"
+                                           required>
+                                    {% if form.title.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.title.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Topshiriq tavsifi -->
+                                <div class="mb-4">
+                                    <label for="id_description" class="form-label">
+                                        <i class="fas fa-align-left me-2"></i>Topshiriq tavsifi *
+                                    </label>
+                                    <textarea class="form-control" 
+                                              id="id_description"
+                                              name="description"
+                                              rows="6"
+                                              placeholder="Topshiriq haqida batafsil ma'lumot, talablar va ko'rsatmalar..."
+                                              required>{% if form.description.value %}{{ form.description.value }}{% endif %}</textarea>
+                                    {% if form.description.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.description.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="row">
+                                    <!-- Topshirish muddati -->
+                                    <div class="col-md-6 mb-4">
+                                        <label for="id_due_date" class="form-label">
+                                            <i class="fas fa-calendar me-2"></i>Topshirish muddati *
+                                        </label>
+                                        <input type="datetime-local" 
+                                               class="form-control" 
+                                               id="id_due_date"
+                                               name="due_date"
+                                               value="{% if form.due_date.value %}{{ form.due_date.value|date:'Y-m-d\TH:i' }}{% endif %}"
+                                               required>
+                                        {% if form.due_date.errors %}
+                                            <div class="text-danger small mt-1">
+                                                {% for error in form.due_date.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Maksimal ball -->
+                                    <div class="col-md-6 mb-4">
+                                        <label for="id_points_possible" class="form-label">
+                                            <i class="fas fa-star me-2"></i>Maksimal ball
+                                        </label>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="id_points_possible"
+                                               name="points_possible"
+                                               value="{% if form.points_possible.value %}{{ form.points_possible.value }}{% else %}100{% endif %}"
+                                               min="1"
+                                               max="1000">
+                                        {% if form.points_possible.errors %}
+                                            <div class="text-danger small mt-1">
+                                                {% for error in form.points_possible.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Eslatma -->
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Eslatma:</strong> Topshiriq yaratilgandan so'ng, talabalar uni ko'rib, javob yuborishlari mumkin bo'ladi.
+                                </div>
+
+                                <!-- Tugmalar -->
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">
+                                        <i class="fas fa-times me-2"></i>Bekor qilish
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>
+                                        {% if assignment %}
+                                            Saqlash
+                                        {% else %}
+                                            Yaratish
+                                        {% endif %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Yordam kartasi -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h6 class="card-title mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>Maslahatlar
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0">
+                                <li class="mb-2">
+                                    <strong>Aniq nom bering:</strong> Topshiriq nomi qisqa va tushunarli bo'lishi kerak
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Batafsil tavsif:</strong> Talabalar nimani qilishlari kerakligini aniq yozing
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Muddat belgilang:</strong> Talabalar uchun etarli vaqt qoldiring
+                                </li>
+                                <li class="mb-0">
+                                    <strong>Ball tizimi:</strong> Topshiriq qiyinligiga mos ball belgilang
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+</style>
+{% endblock %}

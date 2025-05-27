@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Kurslarga qo'shilish - EduAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-home me-2"></i>Boshqaruv paneli
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'course_list' %}">
+                            <i class="fas fa-book me-2"></i>Kurslarim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assignment_list' %}">
+                            <i class="fas fa-tasks me-2"></i>Topshiriqlar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ai_assistant' %}">
+                            <i class="fas fa-robot me-2"></i>AI Yordamchi
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Kurslarga qo'shilish</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="{% url 'course_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Orqaga
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow">
+                        <div class="card-body p-4">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                                <h3 class="card-title">Kursga qo'shilish</h3>
+                                <p class="text-muted">O'qituvchingizdan olgan kurs kodini kiriting</p>
+                            </div>
+                            
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="{{ form.enrollment_code.id_for_label }}" class="form-label">
+                                        <i class="fas fa-key me-2"></i>Kurs kodi
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg text-center" 
+                                           id="{{ form.enrollment_code.id_for_label }}"
+                                           name="{{ form.enrollment_code.name }}"
+                                           placeholder="Masalan: ABC12345"
+                                           style="letter-spacing: 2px; font-family: monospace;"
+                                           required>
+                                    {% if form.enrollment_code.help_text %}
+                                        <div class="form-text">{{ form.enrollment_code.help_text }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-plus me-2"></i>Kursga qo'shilish
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <div class="mt-4 p-3 bg-light rounded">
+                                <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Yordam</h6>
+                                <ul class="mb-0 small">
+                                    <li>Kurs kodini o'qituvchingizdan so'rang</li>
+                                    <li>Kod odatda 8 ta harf va raqamdan iborat</li>
+                                    <li>Katta va kichik harflar farq qilmaydi</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

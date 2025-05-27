@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Yordamchi - EduAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-home me-2"></i>Boshqaruv paneli
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'course_list' %}">
+                            <i class="fas fa-book me-2"></i>Mening kurslarim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assignment_list' %}">
+                            <i class="fas fa-tasks me-2"></i>Topshiriqlar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'ai_assistant' %}">
+                            <i class="fas fa-robot me-2"></i>AI Yordamchi
+                        </a>
+                    </li>
+                </ul>
+
+                <hr>
+
+                <div class="px-3 mb-3">
+                    <a href="{% url 'new_chat' %}" class="btn btn-primary w-100">
+                        <i class="fas fa-plus me-2"></i>Yangi suhbat
+                    </a>
+                </div>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>So'nggi suhbatlar</span>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    {% for session in chat_sessions %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if session.id == current_session.id %}active{% endif %}"
+                               href="{% url 'chat_history' session.id %}">
+                                <i class="fas fa-comment me-2"></i>
+                                {% if session.title %}
+                                    {{ session.title|truncatechars:20 }}
+                                {% else %}
+                                    Suhbat {{ forloop.counter }}
+                                {% endif %}
+                                <small class="text-muted d-block">{{ session.created_at|date:"M d, Y" }}</small>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    {% if user.is_teacher %}
+                        AI O'qitish yordamchisi
+                    {% else %}
+                        AI O'rganish yordamchisi
+                    {% endif %}
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#templatesModal">
+                        <i class="fas fa-lightbulb me-2"></i>Shablonlar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat interface -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-primary text-white p-2 me-2" style="width: 40px; height: 40px;">
+                            <i class="fas fa-robot fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">
+                                {% if user.is_teacher %}
+                                    AI O'qitish yordamchisi
+                                {% else %}
+                                    AI O'rganish yordamchisi
+                                {% endif %}
+                            </h5>
+                            <small class="text-muted">GPT-3.5 tomonidan quvvatlantirilgan</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="chat-container p-3 d-flex flex-column" id="chatContainer">
+                        {% for message in messages %}
+                            <div class="{% if message.role == 'user' %}user-message ms-auto{% else %}assistant-message{% endif %}">
+                                {{ message.content|linebreaksbr }}
+                            </div>
+                        {% endfor %}
+                        <div id="typingIndicator" class="typing-indicator assistant-message" style="display: none;">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="p-3 border-top">
+                        <form id="chatForm" class="d-flex">
+                            <input type="hidden" id="sessionId" value="{{ current_session.id }}">
+                            <input type="text" id="messageInput" class="form-control me-2" placeholder="Xabaringizni kiriting..." required>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Templates Modal -->
+<div class="modal fade" id="templatesModal" tabindex="-1" aria-labelledby="templatesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="templatesModalLabel">Savol shablonlari</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    {% for template in templates %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 template-card" data-prompt="{{ template.prompt }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ template.title }}</h5>
+                                    <p class="card-text text-muted">{{ template.prompt }}</p>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <button class="btn btn-sm btn-outline-primary use-template-btn">Shablonni ishlatish</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const sessionId = document.getElementById('sessionId');
+        const chatContainer = document.getElementById('chatContainer');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Scroll to bottom of chat
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Initially scroll to bottom
+        scrollToBottom();
+
+        // Handle form submission
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'user-message ms-auto';
+            userMessageDiv.textContent = message;
+            chatContainer.appendChild(userMessageDiv);
+
+            // Clear input
+            messageInput.value = '';
+
+            // Show typing indicator
+            typingIndicator.style.display = 'flex';
+            scrollToBottom();
+
+            // Send message to server
+            fetch('{% url "chat_message" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    session_id: sessionId.value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide typing indicator
+                typingIndicator.style.display = 'none';
+
+                // Add assistant message to chat
+                const assistantMessageDiv = document.createElement('div');
+                assistantMessageDiv.className = 'assistant-message';
+                assistantMessageDiv.innerHTML = data.message.replace(/\n/g, '<br>');
+                chatContainer.appendChild(assistantMessageDiv);
+
+                scrollToBottom();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                typingIndicator.style.display = 'none';
+
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'assistant-message';
+                errorDiv.innerHTML = 'Kechirasiz, so\'rovingizni qayta ishlashda xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.';
+                chatContainer.appendChild(errorDiv);
+
+                scrollToBottom();
+            });
+        });
+
+        // Handle template selection
+        const templateCards = document.querySelectorAll('.template-card');
+        templateCards.forEach(card => {
+            const useBtn = card.querySelector('.use-template-btn');
+            useBtn.addEventListener('click', function() {
+                const prompt = card.dataset.prompt;
+                messageInput.value = prompt;
+
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('templatesModal'));
+                modal.hide();
+
+                // Focus on input
+                messageInput.focus();
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}
