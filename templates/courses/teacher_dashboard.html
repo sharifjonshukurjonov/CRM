@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}O'qituvchi boshqaruv paneli - EduAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'dashboard' %}">
+                            <i class="fas fa-home me-2"></i>Boshqaruv paneli
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'course_list' %}">
+                            <i class="fas fa-book me-2"></i>Mening kurslarim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assignment_list' %}">
+                            <i class="fas fa-tasks me-2"></i>Topshiriqlar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ai_assistant' %}">
+                            <i class="fas fa-robot me-2"></i>AI Yordamchi
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">O'qituvchi boshqaruv paneli</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="{% url 'create_course' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Yangi kurs yaratish
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats cards -->
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-primary h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Faol kurslar</h6>
+                                    <h2 class="display-4 fw-bold">{{ course_count }}</h2>
+                                </div>
+                                <i class="fas fa-book fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-success h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Jami talabalar</h6>
+                                    <h2 class="display-4 fw-bold">{{ student_count }}</h2>
+                                </div>
+                                <i class="fas fa-users fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-warning h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Kutilayotgan topshiriqlar</h6>
+                                    <h2 class="display-4 fw-bold">{{ pending_submissions }}</h2>
+                                </div>
+                                <i class="fas fa-clipboard-list fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-info h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Yaratilgan kurslar</h6>
+                                    <h2 class="display-4 fw-bold">{{ course_count }}</h2>
+                                </div>
+                                <i class="fas fa-chalkboard fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent courses -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Mening kurslarim</h5>
+                </div>
+                <div class="card-body">
+                    {% if courses %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kurs nomi</th>
+                                        <th>Fan sohasi</th>
+                                        <th>Talabalar</th>
+                                        <th>Ro'yxatdan o'tish kodi</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for course in courses %}
+                                        <tr>
+                                            <td>{{ course.title }}</td>
+                                            <td>{{ course.subject_area }}</td>
+                                            <td>{{ course.students.count }}</td>
+                                            <td><code>{{ course.enrollment_code }}</code></td>
+                                            <td>
+                                                <div class="d-flex gap-1">
+                                                    <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{% url 'edit_course' course.id %}" class="btn btn-sm btn-secondary">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="{% url 'create_assignment' course.id %}" class="btn btn-sm btn-success">
+                                                        <i class="fas fa-plus"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+
+<!--                                            <td class="">-->
+<!--                                                <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-primary me-1">-->
+<!--                                                    <i class="fas fa-eye"></i>-->
+<!--                                                </a>-->
+<!--                                                <a href="{% url 'edit_course' course.id %}" class="btn btn-sm btn-secondary me-1">-->
+<!--                                                    <i class="fas fa-edit"></i>-->
+<!--                                                </a>-->
+<!--                                                <a href="{% url 'create_assignment' course.id %}" class="btn btn-sm btn-success">-->
+<!--                                                    <i class="fas fa-plus"></i>-->
+<!--                                                </a>-->
+<!--                                            </td>-->
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                            <p class="lead">Siz hali hech qanday kurs yaratmagansiz.</p>
+                            <a href="{% url 'create_course' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Birinchi kursingizni yarating
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent assignments -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">So'nggi topshiriqlar</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_assignments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Topshiriq nomi</th>
+                                        <th>Kurs</th>
+                                        <th>Topshirish muddati</th>
+                                        <th>Topshirilganlar</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assignment in recent_assignments %}
+                                        <tr>
+                                            <td>{{ assignment.title }}</td>
+                                            <td>{{ assignment.course.title }}</td>
+                                            <td>{{ assignment.due_date|date:"M d, Y" }}</td>
+                                            <td>{{ assignment.submissions.count }}/{{ assignment.course.students.count }}</td>
+                                            <td>
+                                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-eye"></i> Ko'rish
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                            <p class="lead">Hali topshiriqlar yaratilmagan.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

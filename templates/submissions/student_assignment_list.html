@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Mening topshiriqlarim - EduAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-home me-2"></i>Boshqaruv paneli
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'course_list' %}">
+                            <i class="fas fa-book me-2"></i>Mening kurslarim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'assignment_list' %}">
+                            <i class="fas fa-tasks me-2"></i>Topshiriqlar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ai_assistant' %}">
+                            <i class="fas fa-robot me-2"></i>AI Yordamchi
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Mening topshiriqlarim</h1>
+            </div>
+
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#pending" data-bs-toggle="tab">Kutilayotgan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#completed" data-bs-toggle="tab">Bajarilgan</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="pending">
+                    {% if assignments %}
+                        <div class="row">
+                            {% for assignment in assignments %}
+                                {% if assignment.submission_status != 'Submitted' %}
+                                    <div class="col-md-6 col-lg-4 mb-4">
+                                        <div class="card h-100 shadow-sm">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title mb-0">{{ assignment.title }}</h5>
+                                                {% if assignment.submission_status == 'Draft' %}
+                                                    <span class="badge bg-info">Qoralama</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning text-dark">Boshlanmagan</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle mb-2 text-muted">{{ assignment.course.title }}</h6>
+                                                <p class="card-text small">{{ assignment.description|truncatechars:100 }}</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-danger">Muddat: {{ assignment.due_date|date:"M d, Y" }}</small>
+                                                    <small class="text-muted">{{ assignment.points_possible }} ball</small>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer bg-transparent">
+                                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-primary btn-sm w-100">
+                                                    {% if assignment.submission_status == 'Draft' %}
+                                                        <i class="fas fa-edit me-1"></i>Davom ettirish
+                                                    {% else %}
+                                                        <i class="fas fa-play me-1"></i>Boshlash
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-check fa-3x text-muted mb-3"></i>
+                            <p class="lead">Sizda kutilayotgan topshiriqlar yo'q.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="completed">
+                    {% if assignments %}
+                        <div class="row">
+                            {% for assignment in assignments %}
+                                {% if assignment.submission_status == 'Submitted' %}
+                                    <div class="col-md-6 col-lg-4 mb-4">
+                                        <div class="card h-100 shadow-sm">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title mb-0">{{ assignment.title }}</h5>
+                                                {% if assignment.is_graded %}
+                                                    <span class="badge bg-success">Baholangan</span>
+                                                {% else %}
+                                                    <span class="badge bg-primary">Topshirilgan</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle mb-2 text-muted">{{ assignment.course.title }}</h6>
+                                                <p class="card-text small">{{ assignment.description|truncatechars:100 }}</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">Topshirilgan: {{ assignment.submission_date|date:"M d, Y" }}</small>
+                                                    {% if assignment.is_graded %}
+                                                        <span class="badge bg-light text-dark border">
+                                                            Ball: {{ assignment.score }}/{{ assignment.points_possible }}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="card-footer bg-transparent">
+                                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-outline-primary btn-sm w-100">
+                                                    <i class="fas fa-eye me-1"></i>Topshiriqni ko'rish
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-check fa-3x text-muted mb-3"></i>
+                            <p class="lead">Siz hali hech qanday topshiriqni bajarmadingiz.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,230 @@
+*{
+    list-style: none;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+}
+header{
+    padding: 25px;
+    width: 100%;
+}
+ul{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+header a{
+    font-size: 28px;
+    color: black;
+}
+header button{
+    background: none;
+    border: none;
+
+}
+
+header button :hover{
+    background: #33AADF;
+    cursor: pointer;
+    padding: 15px 25px;
+    border-radius: 10px;
+    transition: 1.7s;
+}
+header a:hover{
+    color: #14ffe9;
+    transition: 0.5s;
+}
+.wrapper{
+    height: 100px;
+    width: 360px;
+    position: relative;
+    background: linear-gradient(135deg, #14ffe9, #ffeb3b, #ff00e0);
+    border-radius: 10px;
+    cursor: default;
+    animation: animate 1.5s linear infinite;
+}
+.wrapper .display,
+.wrapper span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.wrapper .display{
+    z-index: 999;
+    height: 85px;
+    width: 345px;
+    background: #1b1b1b;
+    border-radius: 6px;
+    text-align: center;
+}
+.display #time {
+    line-height: 85px;
+    color: #fff;
+    font-size: 50px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #14ffe9, #ffeb3b, #ff00e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: animate 1.5s linear infinite;
+}
+
+@keyframes animate{
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}
+
+.wrapper span{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    background: inherit;
+}
+
+.wrapper span:first-child{
+    filter: blur(7px);
+}
+
+.wrapper span:last-child {
+    filter: blur(20px);
+}
+header{
+    background: linear-gradient(135deg, #14ffe9, #ffeb3b, #ff00e0);
+    height: 100px;
+    width: 100%;
+}
+.nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1280px;
+    margin: auto;
+}
+.home{
+    max-width: 1280px;
+    margin: auto;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-top: 100px;
+}
+
+.home h2{
+    font-size: 45px;
+    font-weight: 700;
+    color: black;
+    max-width: 600px;
+    font-family: sans-serif;
+}
+.home p{
+    font-size: 22px;
+    font-weight: 400;
+    color: black;
+    max-width: 600px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+.home button{
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #14ffe9, #ffeb3b, #ff00e0);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-size: 25px;
+}
+.home img{
+    border-radius: 25px;
+    width: 100px;
+    height: 100px;
+    
+}
+.home button:hover{
+    transform: translateX(15px);
+    transition: 1.5s;
+}
+.my h2 {
+    font-size: 85px;
+    font-weight: 700;
+    text-align: center;
+}
+.my{
+    max-width: 1280px;
+    margin: auto;
+margin-top: 100px;
+margin-bottom: 100px;
+}
+.my-right img{
+    border-radius: 1000px;
+}
+.my-box{
+    margin-top: 55px;
+    display: flex;
+align-items: center;
+justify-content: space-between;
+}
+.my h3{
+    font-size: 35px;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 25px;
+    color: red;
+}
+.my p{
+    font-size: 16px;
+    font-weight: 400;
+    color: black;
+    max-width: 500px;
+    margin: auto;
+}
+footer{
+margin-top: 100px;
+background: linear-gradient(135deg, #14ffe9, #ffeb3b, #ff00e0);
+}
+.footer-box{
+    padding: 100px;
+    max-width: 1280px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+     justify-content: space-between;
+     text-align: center;
+}
+footer h4{
+    font-size: 35px;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 30px;
+}
+footer p{
+    font-size: 22px;
+    font-weight: 400;
+    color: black;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+footer a{
+    font-size: 22px;
+    font-weight: 400;
+    color: black;
+}
+
+@media only screen and (max-wih: 1320px){
+    header{
+        padding: 0 50px;
+    }
+}
+@media only screen and (max-wih: 1100px){
+    header{
+        padding: 0 30px;
+    }
+}
+@media only screen and (max-wih: 900px){
+    header{
+        padding: 20px;
+    }
+}
+

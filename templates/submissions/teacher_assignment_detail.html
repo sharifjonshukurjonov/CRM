@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ assignment.title }} - O'qituvchi ko'rinishi - EduAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-home me-2"></i>Boshqaruv paneli
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'course_list' %}">
+                            <i class="fas fa-book me-2"></i>Kurslarim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'assignment_list' %}">
+                            <i class="fas fa-tasks me-2"></i>Topshiriqlar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ai_assistant' %}">
+                            <i class="fas fa-robot me-2"></i>AI Yordamchi
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">{{ assignment.title }}</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="{% url 'course_detail' assignment.course.id %}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-2"></i>Kursga qaytish
+                    </a>
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Tahrirlash
+                    </a>
+                </div>
+            </div>
+
+            <!-- Assignment Info -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tasks me-2"></i>Topshiriq ma'lumotlari
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <h6 class="text-muted">Tavsif</h6>
+                                <p>{{ assignment.description|linebreaksbr }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <h6 class="text-muted">Muddat</h6>
+                                <p class="fw-bold">{{ assignment.due_date|date:"d.m.Y H:i" }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted">Maksimal ball</h6>
+                                <p class="fw-bold">{{ assignment.points_possible }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submissions Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary">{{ submissions.count }}</h3>
+                            <p class="text-muted">Topshirilgan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-warning">{{ assignment.course.students.count|add:"-"|add:submissions.count }}</h3>
+                            <p class="text-muted">Kutilmoqda</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-success">{{ graded_count|default:0 }}</h3>
+                            <p class="text-muted">Baholangan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-info">{{ assignment.course.students.count }}</h3>
+                            <p class="text-muted">Jami talaba</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submissions List -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>Topshirilgan ishlar
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if submissions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Talaba</th>
+                                        <th>Topshirish vaqti</th>
+                                        <th>Holat</th>
+                                        <th>Ball</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for submission in submissions %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                        {{ submission.student.first_name|first|default:submission.student.username|first }}
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">{{ submission.student.get_full_name|default:submission.student.username }}</div>
+                                                        <small class="text-muted">{{ submission.student.email }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>{{ submission.submission_date|date:"d.m.Y H:i" }}</div>
+                                                {% if submission.is_late %}
+                                                    <small class="text-danger">Kech topshirilgan</small>
+                                                {% else %}
+                                                    <small class="text-success">Vaqtida</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if submission.graded %}
+                                                    <span class="badge bg-success">Baholangan</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">Kutilmoqda</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if submission.graded %}
+                                                    <span class="fw-bold">{{ submission.score }}/{{ assignment.points_possible }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{% url 'grade_submission' submission.id %}" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    {% if not submission.graded %}
+                                                        <a href="{% url 'grade_submission' submission.id %}" class="btn btn-sm btn-success">
+                                                            <i class="fas fa-star"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5>Hali hech kim topshirmagan</h5>
+                            <p class="text-muted">Talabalar javob yuborishini kuting</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+.avatar-sm {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+</style>
+{% endblock %}

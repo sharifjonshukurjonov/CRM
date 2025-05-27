@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center py-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">AI integratsiyasi bilan zamonaviy ta'lim platformasi</h1>
+            <p class="lead mb-4">O'qituvchilar va talabalarni interaktiv muhitda bog'laydigan AI quvvatli platformamiz bilan o'qitish va o'rganishni yaxshilang.</p>
+            <div class="d-grid gap-2 d-md-flex">
+                <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-4 me-md-2">
+                    <i class="fas fa-user-plus me-2"></i>Ro'yxatdan o'tish
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-sign-in-alt me-2"></i>Kirish
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block">
+            <img src="https://polinka.top/uploads/posts/2023-05/1684975621_polinka-top-p-shkola-mechti-kartinki-krasivo-3.jpg" alt="EduAI Platformasi" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row py-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-5 fw-bold">Asosiy xususiyatlar</h2>
+            <p class="lead">Samarali o'qitish va o'rganish uchun kerak bo'lgan hamma narsa</p>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-primary bg-opacity-10 text-primary p-3 rounded-circle mb-3 mx-auto" style="width: 65px; height: 65px;">
+                        <i class="fas fa-book fa-2x"></i>
+                    </div>
+                    <h3 class="card-title h5">Kurs boshqaruvi</h3>
+                    <p class="card-text">Kurslar, topshiriqlar va materiallarni yarating va boshqaring. O'qituvchilar sinflarni osongina yaratishi, vazifalarni belgilashi va topshiriqlarni baholashi mumkin.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-success bg-opacity-10 text-success p-3 rounded-circle mb-3 mx-auto" style="width: 65px; height: 65px;">
+                        <i class="fas fa-robot fa-2x"></i>
+                    </div>
+                    <h3 class="card-title h5">AI yordami</h3>
+                    <p class="card-text">Savollar va fikr-mulohazalar uchun AI yordamini oling. Integratsiyalashgan ChatGPT talabalarga savollar bilan yordam beradi va o'qituvchilarga avtomatlashtirilgan fikr-mulohaza tavsiyalarini taqdim etadi.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-info bg-opacity-10 text-info p-3 rounded-circle mb-3 mx-auto" style="width: 65px; height: 65px;">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <h3 class="card-title h5">Rol asosidagi kirish</h3>
+                    <p class="card-text">O'qituvchilar va talabalar uchun moslashtirilgan tajribalar. Har bir kishi o'ziga kerakli vositalarga ega bo'lishini ta'minlaydigan turli interfeys va ruxsatlar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="row py-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-5 fw-bold">Qanday ishlaydi</h2>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h5 mb-0"><i class="fas fa-chalkboard-teacher me-2"></i>O'qituvchilar uchun</h3>
+                </div>
+                <div class="card-body">
+                    <ol class="list-group list-group-numbered list-group-flush">
+                        <li class="list-group-item">Sinflar va fanlarni yarating</li>
+                        <li class="list-group-item">Vazifalarni belgilang va topshiriqlarni ko'ring</li>
+                        <li class="list-group-item">Talabalar ishlarini baholang</li>
+                        <li class="list-group-item">AI yordamida fikr-mulohaza tavsiyalarini oling</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h3 class="h5 mb-0"><i class="fas fa-user-graduate me-2"></i>Talabalar uchun</h3>
+                </div>
+                <div class="card-body">
+                    <ol class="list-group list-group-numbered list-group-flush">
+                        <li class="list-group-item">Ro'yxatdan o'tish kodlari bilan sinflarga qo'shiling</li>
+                        <li class="list-group-item">Topshiriqlarni ko'ring va topshiring</li>
+                        <li class="list-group-item">AI yordamchisiga savollar bering</li>
+                        <li class="list-group-item">O'z yutuqlaringizni kuzating va baholarni ko'ring</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row py-5">
+        <div class="col-12 text-center">
+            <div class="p-5 bg-light rounded-3">
+                <h2 class="display-6 fw-bold mb-3">Boshlashga tayyormisiz?</h2>
+                <p class="lead mb-4">Bugun platformamizga qo'shiling va o'qitish yoki o'rganish tajribangizni o'zgartiring.</p>
+                <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-4">
+                    <i class="fas fa-rocket me-2"></i>Boshlash
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

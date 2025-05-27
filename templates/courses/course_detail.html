@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} - EduAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-home me-2"></i>Boshqaruv paneli
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'course_list' %}">
+                            <i class="fas fa-book me-2"></i>Mening kurslarim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assignment_list' %}">
+                            <i class="fas fa-tasks me-2"></i>Topshiriqlar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ai_assistant' %}">
+                            <i class="fas fa-robot me-2"></i>AI Yordamchi
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'course_list' %}">Mening kurslarim</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ course.title }}</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">{{ course.title }}</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    {% if is_teacher %}
+                        <a href="{% url 'edit_course' course.id %}" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-edit me-2"></i>Kursni tahrirlash
+                        </a>
+                        <a href="{% url 'create_assignment' course.id %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Topshiriq yaratish
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Kurs ma'lumotlari</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="fw-bold">Tavsif</h6>
+                                <p>{{ course.description }}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Fan sohasi</h6>
+                                    <p>{{ course.subject_area }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Daraja</h6>
+                                    <p>{{ course.level }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Boshlanish sanasi</h6>
+                                    <p>{{ course.start_date|date:"F d, Y" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Tugash sanasi</h6>
+                                    <p>{{ course.end_date|date:"F d, Y" }}</p>
+                                </div>
+                            </div>
+                            {% if is_teacher %}
+                                <div class="alert alert-info">
+                                    <h6 class="fw-bold">Ro'yxatdan o'tish kodi</h6>
+                                    <p class="mb-0">Bu kodni talabalaringiz bilan ulashing: <strong>{{ course.enrollment_code }}</strong></p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                {% if is_teacher %}
+                                    O'qituvchi
+                                {% else %}
+                                    Kurs tafsilotlari
+                                {% endif %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if is_teacher %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle fa-3x text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">{{ course.teacher.get_full_name|default:course.teacher.username }}</h6>
+                                        <p class="text-muted mb-0">O'qituvchi</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="fw-bold">Ro'yxatdan o'tgan talabalar</h6>
+                                    <p>{{ course.students.count }}</p>
+                                </div>
+                            {% else %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle fa-3x text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">{{ course.teacher.get_full_name|default:course.teacher.username }}</h6>
+                                        <p class="text-muted mb-0">O'qituvchi</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="mb-0">
+                                <h6 class="fw-bold">Yaratilgan</h6>
+                                <p class="mb-0">{{ course.created_at|date:"F d, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Topshiriqlar</h5>
+                </div>
+                <div class="card-body">
+                    {% if assignments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nomi</th>
+                                        <th>Topshirish muddati</th>
+                                        <th>Ballar</th>
+                                        {% if is_teacher %}
+                                            <th>Topshirilganlar</th>
+                                        {% else %}
+                                            <th>Holati</th>
+                                        {% endif %}
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assignment in assignments %}
+                                        <tr>
+                                            <td>{{ assignment.title }}</td>
+                                            <td>{{ assignment.due_date|date:"M d, Y" }}</td>
+                                            <td>{{ assignment.points_possible }}</td>
+                                            {% if is_teacher %}
+                                                <td>{{ assignment.submissions.count }}/{{ course.students.count }}</td>
+                                            {% else %}
+                                                <td>
+                                                    {% if assignment.submission_status %}
+                                                        <span class="badge bg-success">Topshirilgan</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning text-dark">Topshirilmagan</span>
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                            <td>
+                                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-sm btn-primary">
+                                                    {% if is_teacher %}
+                                                        <i class="fas fa-eye me-1"></i>Ko'rish
+                                                    {% else %}
+                                                        <i class="fas fa-eye me-1"></i>Ko'rish
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                            <p class="lead">Bu kurs uchun hali topshiriqlar yaratilmagan.</p>
+                            {% if is_teacher %}
+                                <a href="{% url 'create_assignment' course.id %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Birinchi topshiriqni yarating
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if is_teacher %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Ro'yxatdan o'tgan talabalar</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if course.students.exists %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Ism</th>
+                                            <th>Foydalanuvchi nomi</th>
+                                            <th>Email</th>
+                                            <th>Qo'shilgan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for student in course.students.all %}
+                                            <tr>
+                                                <td>{{ student.get_full_name|default:"-" }}</td>
+                                                <td>{{ student.username }}</td>
+                                                <td>{{ student.email }}</td>
+                                                <td>{{ student.date_joined|date:"M d, Y" }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                <p class="lead">Bu kursga hali hech qanday talaba ro'yxatdan o'tmagan.</p>
+                                <p>Ro'yxatdan o'tish kodini talabalaringiz bilan ulashing: <strong>{{ course.enrollment_code }}</strong></p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+{% endblock %}
